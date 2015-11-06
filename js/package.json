@@ -1,0 +1,42 @@
+{
+  "name": "rivescript-rsgb",
+  "version": "1.0.0",
+  "description": "RiveScript-Go bindings for JavaScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "grunt test",
+    "prepublish": "grunt dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aichaos/rsgb"
+  },
+  "keywords": [
+    "bot",
+    "chatbot",
+    "chatterbot",
+    "aiml",
+    "artificial",
+    "intelligence",
+    "chatscript",
+    "buddyscript",
+    "rivescript"
+  ],
+  "files": [
+    "index.js"
+  ],
+  "author": "Noah Petherbridge <root@kirsle.net> (https://www.kirsle.net/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aichaos/rsgb/issues"
+  },
+  "devDependencies": {
+    "coffee-script": "~1.10.0",
+    "grunt-contrib-coffee": "~0.13.0",
+    "grunt": "~0.4.5",
+    "grunt-contrib-nodeunit": "~0.4.1",
+    "grunt-browserify": "~4.0.1",
+    "grunt-contrib-uglify": "~0.10.0",
+    "grunt-contrib-clean": "~0.6.0"
+  }
+}
