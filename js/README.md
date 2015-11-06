@@ -68,6 +68,9 @@ $ go get -u github.com/gopherjs/gopherjs
 $ go get github.com/aichaos/rivescript-go
 ```
 
+And then run `make` to compile the RiveScript-Go module to JavaScript. It will
+produce a file named `index.js` which can be imported in Node.
+
 Grunt commands (needs `grunt-cli`, e.g. `npm install -g grunt-cli`):
 
 * `grunt test`: Run the unit tests
