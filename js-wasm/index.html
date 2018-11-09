@@ -1,0 +1,115 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<script src="wasm_exec.js"></script>
+		<script>
+			let RiveScript = {
+				Stream: function(source, then) {},
+				Reply: function(username, message, then) {}
+			};
+
+			// Configure the bot by setting these global "env variables" before
+			// you instantiate the wasm.
+			let RS_Debug = true;
+			let RS_UTF8 = true;
+
+			let __streamReceived;
+			let __streamResolve;    // our promise
+			function __streamRegistered(callback) {
+				RiveScript.Stream = callback
+				__streamResolve();
+			}
+
+			let __replyReceived;
+			let __replyResolve;
+			function __replyRegistered(callback) {
+				RiveScript.Reply = callback;
+				__replyResolve();
+			}
+
+			async function start() {
+				document.querySelector("#app-view").style.display = "block";
+				document.querySelector("#editor-view").style.display = "none";
+
+				const go = new Go();
+				let result = await WebAssembly.instantiateStreaming(fetch("rivescript.wasm"), go.importObject);
+
+				__streamReceived = new Promise((resolve) => {
+					__streamResolve = resolve;
+				});
+				__replyReceived = new Promise(resolve => {
+					__replyResolve = resolve;
+				})
+
+				const run = go.run(result.instance); // Start the wasm binary
+				await __streamReceived; // Wait for callback reception
+				await __replyReceived;
+
+				let source = document.querySelector("#source").value;
+				RiveScript.Stream(source, onLoaded);
+
+				await run; // Wait for binary to terminate
+			}
+
+			function sendMessage() {
+				var message = document.querySelector("#message").value;
+				var $output = document.querySelector("#output");
+
+				$output.value += `[User] ${message}\n`;
+				RiveScript.Reply("user", message, (reply) => {
+					$output.value += `[Bot] ${reply}\n`;
+				});
+
+				document.querySelector("#message").value = "";
+				return false;
+			}
+
+			function onLoaded() {
+				console.log("Bot is ready!");
+			}
+		</script>
+	</head>
+	<body>
+
+		<form onSubmit="sendMessage(); return false">
+
+		<div id="app-view" style="display: none">
+			Message: <input type="text" id="message" autofocus placeholder="Hello bot">
+				<button type="submit">Send</button>
+			<br>
+			Dialogue:<br>
+			<textarea id="output" cols="120" rows="40"></textarea>
+		</div>
+
+		<div id="editor-view" style="display: block">
+			<textarea id="source" cols="120" rows="20">! version = 2.0
+
++ hello bot
+- hello human
+
++ my name is *
+- <set name=<formal>>Nice to meet you, <get name>.
+
++ who am i
+- You are <get name>.
+
+> object add javascript
+	var a = parseInt(args[0]), b = parseInt(args[1]);
+	return a + b;
+< object
+
++ (what is|add) # (plus|and|to) #
+- <star2> + <star4> = <call>add <star2> <star4></call>
+
++ test go function
+- Go function: <call>test</call>
+</textarea>
+			<p>
+				<button type="button" onClick="start()">Start Bot</button>
+			</p>
+		</div>
+
+		</form>
+
+	</body>
+</html>
