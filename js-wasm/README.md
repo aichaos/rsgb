@@ -8,6 +8,8 @@ It only supports these functions:
 * `RiveScript.Stream(code, onDone())` to load code in and sortReplies.
 * `RiveScript.Reply(username, message, onDone(reply))` to get a reply.
 
+Online demo: <https://static.rivescript.com/demo/wasm/>
+
 ## Screenshot
 
 ![screenshot.png](screenshot.png)
